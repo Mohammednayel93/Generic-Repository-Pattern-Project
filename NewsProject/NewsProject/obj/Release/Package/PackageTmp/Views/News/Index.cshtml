@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+Email : <input type="text" id="txt_Email" />
+<br />
+Password : <input type="password" id="txt_pasword" />
+<br />
+Confirm Password : <input type="password" id="txtConfirmPassword" />
+<br />
+<input type="button" onclick="Register();" value="Login" />
+@section scripts{
+    <script>
+                         function Register() {
+                            var Email = $('#txt_Email').val();
+                            var Password = $('#txt_pasword').val();
+                            var ConfirmPassword = $('#txtConfirmPassword').val();
+                            if(Email == '' || Password == '' || ConfirmPassword == '') {
+                        toastr.error('Email is Requied', 'Ops!');
+                    } else if (Password != ConfirmPassword) {
+                        toastr.error('Password not Match');
+                    }
+                    else {
+                        $.ajax({
+                            url: 'http://localhost:1417/api/Account/Register',
+                            data: {
+                                "Email": Email,
+                                "Password": Password,
+                                "ConfirmPassword": ConfirmPassword
+                            },
+                            method: 'POST',
+                            success: function () {
+                                toastr.success("Register Successfully", "Done")
+                            }, error: function (jqXHR) {
+                                toastr.error(jqXHR.responseText, "Ops!")
+                            }
+                        })
+                    }
+
+
+                }
+    </script>
+}

@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>@LangPack.News.News.NewsTitle</h3>
+            </div>
+
+
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+
+            @*<input type="button" value="Add News" class="btn btn-warning" />*@
+            @Html.ActionLink(LangPack.News.News.AddNews, "Create", "News", new { @class = "btn btn-warning" })
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+
+
+                        @*<button type="button" class="btn btn-round btn-primary">insert</button>*@
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+
+                            @*<li>
+                                    <a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>*@
+                        </ul>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <div id="content">
+
+                    </div>
+                    @section scripts{
+                        <script>
+                            $(function () {
+                                if ('@ViewBag.Message' != '') {
+                                    toastr.success('@ViewBag.Message', "Done")
+                                } else if ('@ViewBag.CreatedSuccessfully' != '') {
+                                    toastr.success('@ViewBag.CreatedSuccessfully', "Done")
+
+                                }
+                                LoadData();
+                            })
+
+                            function LoadData() {
+                                $('#content').empty();
+                                $.ajax({
+                                    url: 'http://localhost/NewsProject/Services/api/News/Get',
+                                    method: 'GET',
+                                    //contentType: 'application/json',
+                                    success: function (data) {
+                                        console.log(JSON.stringify(data));
+                                        $.each(data, function (index, value) {
+                                            var content = '<div class="card mb-3" style="max-width: 540px;">';
+                                            content += '<div class="row no-gutters">';
+                                            content += ' <div class="col-md-4">';
+                                            content += ' <img src=' + value.Image + ' class="card-img" style="width:181px; height:176px" alt="...">';
+                                            content += '  </div>';
+                                            content += '  <div class="col-md-8">';
+                                            content += '<div class="card-body">';
+                                            content += ' <h5 class="card-title">' + value.Title + '</h5>';
+                                            content += ' <p class="card-text">' + value.Details + '</p>';
+                                            //content += '  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>';
+                                            content += '<input type="button" value="Edit" onclick="Edit(' + value.Code + ');" class="btn btn-primary">';
+                                            content += '<input type="button" value="Delete" onclick="Delete(' + value.Code + ');" class="btn btn-success">';
+                                            content += '</div>';
+                                            content += ' </div>';
+                                            content += ' </div>';
+                                            content += ' </div>';
+                                            content += ' <hr/>';
+                                            $('#content').append(content);
+                                        })
+
+                                    },
+                                    error: function (jqXHR) {
+                                        toastr.error(jqXHR.responseText, "Ops!")
+                                    }
+                                })
+                            }
+                            function Delete(code) {
+                                //toastr.success("Deleted Clicked" + code, "Done");
+
+                                //var confirmTxt = $('#hiddenTxts #txtConfirmDeletion').val(),
+                                //    yesTxt = $('#hiddenTxts #txtYes').val(),
+                                //    noText = $('#hiddenTxts #txtNo').val(),
+                                //    deleteTxt = $('#hiddenTxts #txtDelete').val();
+
+                                bootbox.confirm({
+                                    title: "Delete",
+                                    message: "Are you sure to delete this !",
+                                    buttons: {
+                                        cancel: {
+                                            label: '<i class="fa fa-times"></i> ' + "No"
+                                        },
+                                        confirm: {
+                                            label: '<i class="fa fa-check"></i>' + "Yes"
+                                        }
+                                    },
+                                    callback: function (result) {
+
+                                        if (result) {
+
+                                            $.ajax({
+                                                type: "post",
+                                                url: '/News/Delete',
+                                                data: {
+                                                    code: code
+                                                },
+                                                success: function (response) {
+
+                                                    if (response.Status==1) {
+                                                        toastr.success(response.Message);
+                                                        LoadData()
+                                                    }
+                                                    else {
+                                                        toastr.error(response.Message);
+                                                    }
+                                                }
+
+                                            })
+                                        }
+                                    }
+                                });
+
+                            }                                                                                                                                                                                                                                                                                                                                                                                                                                                              //consol.log(JSON.stringify(obj));
+                            function Edit(code) {
+                                $.ajax({
+                                    url: '/News/Edit',
+                                    data: { code: code },
+                                    success: function (data) {
+                                        $("#modalContent").html(data);
+                                        $("#modalMessage").modal("show");
+                                    }
+                                })
+                                //toastr.success(" Edit Clicked" + code, "Done");
+                            }
+
+
+
+                        </script>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*Email : <input type="text" id="txt_Email" />
+    <br />
+    Password : <input type="password" id="txt_pasword" />
+    <br />
+    Confirm Password : <input type="password" id="txtConfirmPassword" />
+    <br />
+    <input type="button" onclick="Register();" value="Login" />
+    @section scripts{
+        <script>
+            function Register() {
+                var Email = $('#txt_Email').val();
+                var Password = $('#txt_pasword').val();
+                var ConfirmPassword = $('#txtConfirmPassword').val();
+                if (Email == '' || Password == '' || ConfirmPassword == '') {
+                    toastr.error('Email is Requied', 'Ops!');
+                } else if (Password != ConfirmPassword) {
+                    toastr.error('Password not Match');
+                }
+                else {
+                    var obj = {
+                        Email: Email,
+                        Password: Password,
+                        ConfirmPassword: ConfirmPassword
+                    }
+                    //consol.log(JSON.stringify(obj));
+                    $.ajax({
+                        url: 'http://localhost/NewsProject/Services/api/Account/Register',
+                        data: JSON.stringify(obj)
+
+                        ,
+                        method: 'POST',
+                        contentType: 'application/json',
+                        success: function () {
+                            toastr.success("Register Successfully", "Done")
+                        }, error: function (jqXHR) {
+                            toastr.error(jqXHR.responseText, "Ops!")
+                        }
+                    })
+                }
+
+            }
+        </script>
+    }*@

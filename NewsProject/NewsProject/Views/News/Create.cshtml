@@ -1,0 +1,119 @@
+﻿@model DAL.Models.News
+@{
+    ViewBag.Title = "Create";
+}
+
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>@LangPack.News.News.AddNews</h3>
+            </div>
+
+
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <form method="post" action="/News/Create" enctype="multipart/form-data">
+                @*<form enctype="multipart/form-data">*@
+                <div class="modal-body">
+
+                    <div class="md-form  ">
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">@LangPack.News.News.Title</label>
+
+                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Title)
+                        @*<input type="text" class="form-control" id="txtTitle" />*@
+
+
+                    </div>
+                    <div class="md-form  ">
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">@LangPack.News.News.Details</label>
+                        @Html.TextAreaFor(m => m.Details, new { @class = "form-control summernote" })
+
+                        @*<textarea class="form-control summernote" id="txtDetails"></textarea>*@
+
+                    </div>
+
+
+                    <div class="md-form  ">
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">@LangPack.News.News.Image</label>
+                        <input type="file" id="file" name="ImageUploaded" accept="image/png,image/jpg" onchange="ShowImagePreview(this, document.getElementById('imagePreview'))" />
+
+                    </div>
+
+
+                    <img src="" id="imagePreview" style="width:200px;height:200px" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@LangPack.News.News.Cancel</button>
+
+                    <input id="Submit1" class="btn btn-default" type="submit" @*onclick="AddNews();"*@ value="@LangPack.News.News.Save" />
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function () {
+            if ('@ViewBag.ImageRequired' != '') {
+                toastr.error('@ViewBag.ImageRequired', 'Ops!')
+            } else if ('@ViewBag.ErrorInSave' != '') {
+                toastr.error('@ViewBag.ErrorInSave', 'Ops!')
+
+            } else if ('@ViewBag.DetailsRequired' != '') {
+                toastr.error('@ViewBag.DetailsRequired', 'Ops!')
+
+            }
+            $('.summernote').summernote();
+        })
+        //function AddNews() {
+        //    var Title = $("#txtTitle").val();
+        //    var Details = $("#txtDetails").val();
+        //    var filename = $('#file').val().replace(/C:\\fakepath\\/i, '')
+        //    var logoImg = $('#file').get(0).files[0];
+        //    if (Title == '' || Details == '' || filename == '') {
+        //        toastr.error("All fields are required")
+        //    }
+        //    else {
+        //        var formData = new FormData();
+        //        formData.append('Image', logoImg);
+        //        formData.append('Title', Title);
+        //        formData.append('Details', Details);
+
+
+
+
+        //        for (var pair of formData.entries()) {
+        //            console.log(pair[0] + ', ' + pair[1]);
+        //        }
+        //        //var obj = {
+        //        //    Title: Email,
+        //        //    Details: Password,
+        //        //    Image: filename
+        //        //}
+        //        $.ajax({
+        //            url: "http://localhost/NewsProject/Services/api/News/Post",
+        //            type: "POST",
+        //            processData: false,
+        //            contentType: 'application/json',
+        //            data: formData,
+        //            complete: function (data) {
+        //                alert("success");
+        //            }
+        //        });
+        //    }
+
+
+
+        //}
+
+    </script>
+}

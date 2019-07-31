@@ -1,0 +1,47 @@
+﻿@model DAL.Models.News
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalCenterTitle">Edit News</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form method="post" action="/news/Edit" enctype="multipart/form-data">
+
+    <div class="modal-body">
+        @Html.HiddenFor(m => m.Code);
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">@LangPack.News.News.Title</label>
+
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Title)
+
+
+        </div>
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">@LangPack.News.News.Details</label>
+            @Html.TextAreaFor(m => m.Details, new { @class = "form-control summernote" })
+
+
+
+        </div>
+
+
+        <div class="md-form  ">
+            <label data-error="wrong" data-success="right" for="defaultForm-email">@LangPack.News.News.Image</label>
+            <input type="file" id="=file" name="ImageUploaded" accept="image/png,image/jpg" onchange="ShowImagePreview(this, document.getElementById('imagePreview'))" />
+
+        </div>
+
+
+        <img src="@Url.Content(Model.Image)" id="imagePreview" style="width:200px;height:200px" />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">@LangPack.News.News.Cancel</button>
+
+        <input id="Submit1" class="btn btn-default" type="submit" value="@LangPack.News.News.Save" />
+    </div>
+</form>
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/summernote")
+
